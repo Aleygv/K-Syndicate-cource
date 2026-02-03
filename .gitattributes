@@ -1,0 +1,12 @@
+# 1) Скрыть всё по умолчанию (GitLab будет сворачивать)
+**/* gitlab-generated
+
+# 2) Но не сворачивать C# файлы — показывать их в diff
+# покрываем как корневые, так и вложенные пути
+*.cs -gitlab-generated
+**/*.cs -gitlab-generated
+
+# 3) Рекомендуемые исключения (показывать README и настройки проекта)
+README.md -gitlab-generated
+.gitattributes -gitlab-generated
+ProjectSettings/** -gitlab-generated

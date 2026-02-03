@@ -1,0 +1,197 @@
+root = true
+
+########################
+# Общие правила для всех файлов
+########################
+[*]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+
+########################
+# C#-код
+########################
+[*.cs]
+
+########################
+# Настройка StyleCop (SA****)
+########################
+
+# === КРИТИЧНЫЕ (ломают билд) ===
+
+# SA1400: Element should declare an access modifier
+dotnet_diagnostic.SA1400.severity = error
+
+# SA1649: File name should match first type name
+dotnet_diagnostic.SA1649.severity = error
+
+# === ВЫКЛЮЧЕННЫЕ (мешают обучению) ===
+
+dotnet_diagnostic.SA1134.severity = none
+
+# SA1202: 'public' members should come before 'private' members
+dotnet_diagnostic.SA1202.severity = none
+
+dotnet_diagnostic.SA1028.severity = none
+
+# SA0001: XML comment analysis disabled
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1200: Using directive should appear within a namespace
+dotnet_diagnostic.SA1200.severity = none
+
+# SA1309: Field '_name' should not begin with underscore (конфликтует с твоим стилем — отключаем)
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1600: Elements must be documented
+dotnet_diagnostic.SA1600.severity = none
+
+# SA1633: File header must be present
+dotnet_diagnostic.SA1633.severity = none
+
+########################
+# Запрет лишнего this.
+########################
+dotnet_diagnostic.IDE0003.severity = error
+dotnet_diagnostic.IDE0009.severity = error
+
+########################
+# Любые IDE1006 (нарушение правила имен) считаем ошибкой
+########################
+dotnet_diagnostic.IDE1006.severity = error
+
+# Правило IDE0036
+dotnet_diagnostic.IDE0036.severity = error
+
+########################
+# Нейминг: стили
+########################
+
+# PascalCase
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+# _camelCase
+dotnet_naming_style.camel_with_underscore.capitalization = camel_case
+dotnet_naming_style.camel_with_underscore.required_prefix = _
+
+# UPPER_CASE_WITH_UNDERSCORE
+dotnet_naming_style.upper_case_with_underscore.capitalization = all_upper
+dotnet_naming_style.upper_case_with_underscore.word_separator = _
+
+# I + PascalCase (интерфейсы)
+dotnet_naming_style.interface_with_i_prefix.capitalization = pascal_case
+dotnet_naming_style.interface_with_i_prefix.required_prefix = I
+
+# On + PascalCase (события) — мягкое правило, на будущее
+dotnet_naming_style.pascal_with_on_prefix.capitalization = pascal_case
+dotnet_naming_style.pascal_with_on_prefix.required_prefix = On
+
+########################
+# Нейминг: группы символов
+########################
+
+# private + protected поля
+dotnet_naming_symbols.private_and_protected_fields.applicable_kinds = field
+dotnet_naming_symbols.private_and_protected_fields.applicable_accessibilities = private, protected
+dotnet_naming_symbols.private_and_protected_fields.required_modifiers =
+
+# public + internal поля
+dotnet_naming_symbols.public_internal_fields.applicable_kinds = field
+dotnet_naming_symbols.public_internal_fields.applicable_accessibilities = public, internal
+dotnet_naming_symbols.public_internal_fields.required_modifiers =
+
+# const поля
+dotnet_naming_symbols.const_fields.applicable_kinds = field
+dotnet_naming_symbols.const_fields.required_modifiers = const
+
+# Свойства
+dotnet_naming_symbols.properties.applicable_kinds = property
+
+# Методы
+dotnet_naming_symbols.methods.applicable_kinds = method
+
+# Классы и структуры
+dotnet_naming_symbols.classes_and_structs.applicable_kinds = class, struct
+
+# Интерфейсы
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+
+# Enum-типы
+dotnet_naming_symbols.enums.applicable_kinds = enum
+
+# Enum-значения
+dotnet_naming_symbols.enum_members.applicable_kinds = enum_member
+
+# Пространства имён (чисто на будущее, мягко)
+dotnet_naming_symbols.namespaces.applicable_kinds = namespace
+
+# События (для OnSomething, мягко)
+dotnet_naming_symbols.events.applicable_kinds = event
+
+########################
+# Нейминг: правила (критичные + мягкие)
+########################
+
+# private + protected поля → _camelCase (КРИТИЧНО)
+dotnet_naming_rule.private_protected_fields_should_be_camel_with_underscore.symbols = private_and_protected_fields
+dotnet_naming_rule.private_protected_fields_should_be_camel_with_underscore.style = camel_with_underscore
+dotnet_naming_rule.private_protected_fields_should_be_camel_with_underscore.severity = error
+
+# public + internal поля → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.public_internal_fields_should_be_pascal.symbols = public_internal_fields
+dotnet_naming_rule.public_internal_fields_should_be_pascal.style = pascal_case
+dotnet_naming_rule.public_internal_fields_should_be_pascal.severity = error
+
+# const поля → UPPER_CASE (КРИТИЧНО)
+dotnet_naming_rule.const_fields_should_be_upper.symbols = const_fields
+dotnet_naming_rule.const_fields_should_be_upper.style = upper_case_with_underscore
+dotnet_naming_rule.const_fields_should_be_upper.severity = error
+
+# Свойства → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.properties_should_be_pascal.symbols = properties
+dotnet_naming_rule.properties_should_be_pascal.style = pascal_case
+dotnet_naming_rule.properties_should_be_pascal.severity = error
+
+# Методы → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.methods_should_be_pascal.symbols = methods
+dotnet_naming_rule.methods_should_be_pascal.style = pascal_case
+dotnet_naming_rule.methods_should_be_pascal.severity = error
+
+# Классы и структуры → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.classes_and_structs_should_be_pascal.symbols = classes_and_structs
+dotnet_naming_rule.classes_and_structs_should_be_pascal.style = pascal_case
+dotnet_naming_rule.classes_and_structs_should_be_pascal.severity = error
+
+# Интерфейсы → I + PascalCase (КРИТИЧНО)
+dotnet_naming_rule.interfaces_should_be_ipascal.symbols = interfaces
+dotnet_naming_rule.interfaces_should_be_ipascal.style = interface_with_i_prefix
+dotnet_naming_rule.interfaces_should_be_ipascal.severity = error
+
+# Enum-типы → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.enums_should_be_pascal.symbols = enums
+dotnet_naming_rule.enums_should_be_pascal.style = pascal_case
+dotnet_naming_rule.enums_should_be_pascal.severity = error
+
+# Enum-значения → PascalCase (КРИТИЧНО)
+dotnet_naming_rule.enum_members_should_be_pascal.symbols = enum_members
+dotnet_naming_rule.enum_members_should_be_pascal.style = pascal_case
+dotnet_naming_rule.enum_members_should_be_pascal.severity = error
+
+# Пространства имён → PascalCase (МЯГКО)
+dotnet_naming_rule.namespaces_should_be_pascal.symbols = namespaces
+dotnet_naming_rule.namespaces_should_be_pascal.style = pascal_case
+dotnet_naming_rule.namespaces_should_be_pascal.severity = suggestion
+
+# События → On + PascalCase (МЯГКО)
+dotnet_naming_rule.events_should_be_on_pascal.symbols = events
+dotnet_naming_rule.events_should_be_on_pascal.style = pascal_with_on_prefix
+dotnet_naming_rule.events_should_be_on_pascal.severity = suggestion
+
+dotnet_diagnostic.CA1052.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1823.severity = warning

@@ -1,0 +1,150 @@
+stages:
+  - sync
+  - codestyle
+
+variables:
+  MENTOR_CONFIG_REPO: "$CI_SERVER_URL/unity-mentorship/templates/student-template-unity.git"
+
+sync-mentor-config:
+  stage: sync
+  image: alpine:3.20
+  before_script:
+    - apk add --no-cache git curl
+  script:
+    - echo "[sync] Cloning mentor config from $MENTOR_CONFIG_REPO"
+    - git clone --depth 1 "$MENTOR_CONFIG_REPO" mentor-template
+
+      # Лолочкин шоколад
+      # Копируем конфиги + пайплайн из шаблона
+    - cp mentor-template/.editorconfig .
+    - cp mentor-template/Directory.Build.props .
+    - cp mentor-template/.csharpierignore . || echo "No .csharpierignore in template, skipping."
+    - cp mentor-template/.gitlab-ci.yml . || echo "No .gitlab-ci.yml in template, skipping."
+    - cp mentor-template/.gitattributes . || echo "No .gitattributes in template, skipping."
+    - rm -rf mentor-template
+
+      # Если изменений нет — выходим
+    - |
+      if git diff --quiet; then
+        echo "[sync] No changes from template."
+        exit 0
+      fi
+
+      # Ветка синка
+    - BRANCH="mentor-sync-$(date +%Y%m%d-%H%M%S)"
+    - git checkout -b "$BRANCH"
+
+      # Автор коммита
+    - git config user.email "ci@unity-mentor.ru"
+    - git config user.name "MentorSyncBot"
+
+      # Стадируем только нужные файлы
+    - git add .editorconfig Directory.Build.props .csharpierignore .gitlab-ci.yml || true
+
+      # Если после add нечего коммитить — тоже выходим
+    - |
+      if git diff --cached --quiet; then
+        echo "[sync] Nothing to commit after staging changes."
+        exit 0
+      fi
+
+      # Коммит
+    - git commit -m "Sync mentor config from template"
+
+      # 🔑 Пушим через токен: любой username + токен как пароль
+    - >
+      git push -u
+      "https://sync-bot:${MENTOR_SYNC_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+      "$BRANCH"
+
+      # 🔁 Создаём MR из BRANCH в $CI_DEFAULT_BRANCH, если его ещё нет
+    - |
+      API_URL="$CI_SERVER_URL/api/v4"
+      PROJECT_ID="$CI_PROJECT_ID"
+      SOURCE_BRANCH="$BRANCH"
+      TARGET_BRANCH="$CI_DEFAULT_BRANCH"
+      TOKEN="$MENTOR_SYNC_TOKEN"
+
+      echo "[sync] Checking existing MR from $SOURCE_BRANCH to $TARGET_BRANCH..."
+
+      EXISTING_MRS=$(curl --silent --header "PRIVATE-TOKEN: $TOKEN" \
+        "$API_URL/projects/$PROJECT_ID/merge_requests?source_branch=$SOURCE_BRANCH&target_branch=$TARGET_BRANCH&state=opened")
+
+      if [ "$EXISTING_MRS" = "[]" ]; then
+        echo "[sync] No existing MR, creating new one..."
+
+        if curl --silent --show-error --fail \
+          --request POST \
+          --header "PRIVATE-TOKEN: $TOKEN" \
+          "$API_URL/projects/$PROJECT_ID/merge_requests" \
+          --data "source_branch=$SOURCE_BRANCH" \
+          --data "target_branch=$TARGET_BRANCH" \
+          --data-urlencode "title=Mentor sync: $SOURCE_BRANCH → $TARGET_BRANCH" \
+          --data-urlencode "description=Автоматический MR с изменениями из шаблона ментора."; then
+          echo "[sync] MR created."
+        else
+          echo "[sync] ERROR: failed to create MR via API."
+          # Можно не падать джобой, если не хочешь ломать пайплайн:
+          # exit 1
+        fi
+      else
+        echo "[sync] MR already exists or API returned non-empty list:"
+        echo "$EXISTING_MRS"
+      fi
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^mentor-sync-/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+
+codestyle-check:
+  stage: codestyle
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  allow_failure: true
+  variables:
+    DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+  script:
+    - printf "\033[34m[codestyle-check] Running Roslyn analyzers...\033[0m\n"
+    - |
+      set -e
+
+      summarize_errors () {
+        if [ -f build.log ]; then
+          echo ""
+          echo "###############################################"
+          printf "\033[31m=== Вывод по ошибкам кодстайла ===\033[0m\n"
+          # Только ошибки SA/IDE — это твой кодстайл
+          grep -E "error (SA|IDE)[0-9]{4}" build.log || echo "No SA/IDE errors found in log."
+          echo "###############################################"
+        fi
+      }
+
+      build_target () {
+        target="$1"
+        echo "[codestyle-check] Restoring $target"
+        dotnet restore "$target"
+        echo "[codestyle-check] Building  $target"
+        # Лог билда в файл и в stdout; при ошибке сразу summary
+        if ! dotnet build "$target" |& tee build.log; then
+          summarize_errors
+          exit 1
+        fi
+      }
+
+      solution_count=$(find . -name '*.sln' | wc -l)
+
+      if [ "$solution_count" -gt 0 ]; then
+        echo "[codestyle-check] Found $solution_count solution file(s). Building all of them..."
+        find . -name '*.sln' -print0 | while IFS= read -r -d '' sln; do
+          build_target "$sln"
+        done
+      else
+        echo "[codestyle-check] No .sln found, building all .csproj files..."
+        find . -name '*.csproj' -print0 | while IFS= read -r -d '' proj; do
+          build_target "$proj"
+        done
+      fi
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
