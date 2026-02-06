@@ -11,7 +11,6 @@ namespace _Project.Logic.Services.Input
 
         public abstract Vector2 Axis { get; }
 
-
         public bool IsAttackButtonUp() => SimpleInput.GetButtonUp(BUTTON);
 
         protected static Vector2 SimpleInputAxis() => new (SimpleInput.GetAxis(HORIZONTAL), SimpleInput.GetAxis(VERTICAL));

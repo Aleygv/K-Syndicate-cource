@@ -5,23 +5,12 @@ namespace _Project.Logic.Infrastructure
 {
     public class Game
     {
+        public readonly GameStateMachine _stateMachine;
         public static IInputService InputService;
 
-        public Game()
+        public Game(ICoroutineRunner coroutineRunner, LoadingCurtain curtain)
         {
-            RegisterInputService();
-        }
-
-        private static void RegisterInputService()
-        {
-            if (Application.isEditor)
-            {
-                InputService = new StandaloneInputService();
-            }
-            else
-            {
-                InputService = new MobileInputService();
-            }
+            _stateMachine = new GameStateMachine(new SceneLoader(coroutineRunner), curtain);
         }
     }
 }

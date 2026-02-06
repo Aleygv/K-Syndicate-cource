@@ -2,7 +2,6 @@ using System;
 using _Project.Logic.Infrastructure;
 using _Project.Logic.Services.Input;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Project.Logic.Hero
 {
@@ -20,20 +19,13 @@ namespace _Project.Logic.Hero
             _inputService = Game.InputService;
         }
 
-        private void Start()
-        {
-            _camera = Camera.main;
-
-            CameraFollow();
-        }
-
         private void Update()
         {
             Vector3 movementVector = Vector3.zero;
 
             if (_inputService.Axis.sqrMagnitude > Constants.EPSILON)
             {
-                movementVector = _camera.transform.TransformDirection(_inputService.Axis);
+                movementVector = Camera.main.transform.TransformDirection(_inputService.Axis);
                 movementVector.y = 0f;
                 movementVector.Normalize();
 
@@ -45,6 +37,5 @@ namespace _Project.Logic.Hero
             _characterController.Move(_movementSpeed * movementVector * Time.deltaTime);
         }
 
-        private void CameraFollow() => _camera.GetComponent<CameraFollow>().Follow(gameObject);
     }
 }
