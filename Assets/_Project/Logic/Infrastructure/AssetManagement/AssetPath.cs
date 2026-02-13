@@ -3,6 +3,6 @@
     public static class AssetPath
     {
         public const string HUDPATH = "Hud";
-        public const string HEROPATH = "Hero";
+        public const string HEROPATH = "hero";
     }
 }
