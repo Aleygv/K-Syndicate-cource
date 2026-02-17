@@ -32,5 +32,11 @@ namespace _Project.Logic.Infrastructure.Services.SaveLoad
         {
             return PlayerPrefs.GetString(PROGRESSKEY)?.ToDeserialized<PlayerProgress>();
         }
+
+        public void Dispose()
+        {
+            _progressService?.Dispose();
+            _gameFactory?.Dispose();
+        }
     }
 }

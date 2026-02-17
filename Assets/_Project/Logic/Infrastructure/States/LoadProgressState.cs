@@ -27,6 +27,10 @@ namespace _Project.Logic.Infrastructure.States
         {
         }
 
+        public void Update()
+        {
+        }
+
         private void LoadProgressOrInitNew()
         {
             _progressService.Progress = _saveLoadService.LoadProgress() ?? NewProgress();

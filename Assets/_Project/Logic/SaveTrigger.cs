@@ -22,6 +22,8 @@ namespace _Project.Logic
 
             Debug.Log("Progress saved");
             gameObject.SetActive(false);
+
+            AllServices.Container.Single<ISaveLoadService>().Dispose();
         }
 
         private void OnDrawGizmos()

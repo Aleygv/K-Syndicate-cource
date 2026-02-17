@@ -5,9 +5,14 @@
         void Enter();
     }
 
-    public interface IExitableState
+    public interface IExitableState : IUpdatableState
     {
         void Exit();
+    }
+
+    public interface IUpdatableState
+    {
+        void Update();
     }
 
     public interface IPayLoadedState<TPayload> : IExitableState

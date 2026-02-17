@@ -13,5 +13,9 @@ namespace _Project.Logic.Infrastructure.Services.Input
         public bool IsAttackButtonUp() => SimpleInput.GetButtonUp(BUTTON);
 
         protected static Vector2 SimpleInputAxis() => new (SimpleInput.GetAxis(HORIZONTAL), SimpleInput.GetAxis(VERTICAL));
+
+        public void Dispose()
+        {
+        }
     }
 }

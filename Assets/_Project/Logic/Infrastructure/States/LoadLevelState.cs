@@ -1,4 +1,5 @@
-﻿using _Project.Logic.Infrastructure.Factory;
+﻿using System;
+using _Project.Logic.Infrastructure.Factory;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using UnityEngine;
 
@@ -33,6 +34,11 @@ namespace _Project.Logic.Infrastructure.States
         public void Exit()
         {
             _curtain.Hide();
+            _curtain?.Dispose();
+        }
+
+        public void Update()
+        {
         }
 
         private void OnLoaded()

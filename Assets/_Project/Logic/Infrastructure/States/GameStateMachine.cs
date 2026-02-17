@@ -4,6 +4,7 @@ using _Project.Logic.Infrastructure.Factory;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using _Project.Logic.Infrastructure.Services.SaveLoad;
+using UnityEngine;
 
 namespace _Project.Logic.Infrastructure.States
 {
@@ -51,6 +52,11 @@ namespace _Project.Logic.Infrastructure.States
             _activeState = state;
 
             return state;
+        }
+
+        public void Update()
+        {
+            _activeState.Update();
         }
     }
 }

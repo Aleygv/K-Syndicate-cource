@@ -20,5 +20,10 @@ namespace _Project.Logic.Infrastructure.Services.Input
         }
 
         private static Vector2 UnityAxis() => new (UnityEngine.Input.GetAxis(HORIZONTAL), UnityEngine.Input.GetAxis(VERTICAL));
+
+        public void Dispose()
+        {
+            Debug.Log("Dispose from Standalone");
+        }
     }
 }

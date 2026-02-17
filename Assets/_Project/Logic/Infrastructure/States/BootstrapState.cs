@@ -33,6 +33,10 @@ namespace _Project.Logic.Infrastructure.States
         {
         }
 
+        public void Update()
+        {
+        }
+
         private void EnterLoadLevel()
         {
             _gameStateMachine.Enter<LoadProgressState>();

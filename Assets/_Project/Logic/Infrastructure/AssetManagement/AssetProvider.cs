@@ -15,5 +15,10 @@ namespace _Project.Logic.Infrastructure.AssetManagement
             var prefab = Resources.Load<GameObject>(path);
             return Object.Instantiate(prefab, at, Quaternion.identity);
         }
+
+        public void Dispose()
+        {
+            Debug.Log("Dispose from AssetProvider");
+        }
     }
 }

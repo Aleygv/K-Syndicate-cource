@@ -10,12 +10,14 @@ namespace _Project.Logic.Infrastructure.Factory
     {
         private readonly IAssets _assets;
 
+        public event Action HeroCreated;
+
         public List<ISavedProgressReader> ProgressReaders { get; } = new List<ISavedProgressReader>();
 
         public List<ISavedProgress> ProgressWriters { get; } = new List<ISavedProgress>();
 
         public GameObject HeroGameObject { get; set; }
-        public event Action HeroCreated;
+
 
         public GameFactory(IAssets assets)
         {
@@ -70,6 +72,11 @@ namespace _Project.Logic.Infrastructure.Factory
             }
 
             ProgressReaders.Add(progressReader);
+        }
+
+        public void Dispose()
+        {
+            Debug.Log("Dispose from GameFactory");
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace _Project.Logic.Infrastructure.Services
+﻿using System;
+
+namespace _Project.Logic.Infrastructure.Services
 {
-    public interface IService
+    public interface IService : IDisposable
     {
     }
 }

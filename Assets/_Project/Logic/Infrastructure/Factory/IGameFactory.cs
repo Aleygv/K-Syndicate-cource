@@ -8,17 +8,17 @@ namespace _Project.Logic.Infrastructure.Factory
 {
     public interface IGameFactory : IService
     {
-        GameObject CreateHero(GameObject at);
-
-        GameObject HeroGameObject { get; }
-
         event Action HeroCreated;
 
-        void CreateHud();
+        GameObject HeroGameObject { get; }
 
         List<ISavedProgressReader> ProgressReaders { get; }
 
         List<ISavedProgress> ProgressWriters { get; }
+
+        GameObject CreateHero(GameObject at);
+
+        void CreateHud();
 
         void CleanUp();
     }
