@@ -8,7 +8,7 @@
                 "b": 0.27000001072883608,
                 "a": 1.0
             },
-            "markerIndex": 0
+            "markerIndex": 7
         },
         {
             "path": "Assets/_Project/Resources",
@@ -28,7 +28,7 @@
                 "b": 0.5299999713897705,
                 "a": 1.0
             },
-            "markerIndex": 0
+            "markerIndex": 7
         }
     ]
 }
