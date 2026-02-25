@@ -38,7 +38,14 @@ namespace _Project.Logic.Infrastructure.States
 
         private PlayerProgress NewProgress()
         {
-            return new PlayerProgress(initialLevel: "Main");
+            var progress = new PlayerProgress(initialLevel: "Main");
+
+            progress.HeroState.MaxHP = 50f;
+            progress.HeroStats.Damage = 1f;
+            progress.HeroStats.DamageRadius = 0.5f;
+            progress.HeroState.ResetHP();
+
+            return progress;
         }
     }
 }

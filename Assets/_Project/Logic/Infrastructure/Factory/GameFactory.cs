@@ -31,9 +31,9 @@ namespace _Project.Logic.Infrastructure.Factory
             return HeroGameObject;
         }
 
-        public void CreateHud()
+        public GameObject CreateHud()
         {
-            InstantiateRegistered(AssetPath.HUDPATH);
+            return InstantiateRegistered(AssetPath.HUDPATH);
         }
 
         public void CleanUp()

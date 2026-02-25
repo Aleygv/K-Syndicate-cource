@@ -6,7 +6,7 @@ namespace _Project.Logic.Infrastructure.Services.Input
     {
         protected const string HORIZONTAL = "Horizontal";
         protected const string VERTICAL = "Vertical";
-        private const string BUTTON = "Fire";
+        private const string BUTTON = "Attack";
 
         public abstract Vector2 Axis { get; }
 

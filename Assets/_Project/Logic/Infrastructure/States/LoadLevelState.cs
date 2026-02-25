@@ -1,6 +1,8 @@
 ﻿using System;
+using _Project.Logic.Hero;
 using _Project.Logic.Infrastructure.Factory;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
+using _Project.Logic.UI;
 using UnityEngine;
 
 namespace _Project.Logic.Infrastructure.States
@@ -60,9 +62,17 @@ namespace _Project.Logic.Infrastructure.States
         private void InitGameWorld()
         {
             GameObject hero = _gameFactory.CreateHero(at: GameObject.FindWithTag(INITIALPOINTTAG));
-            _gameFactory.CreateHud();
+
+            InitHud(hero);
 
             CameraFollow(hero);
+        }
+
+        private void InitHud(GameObject hero)
+        {
+            GameObject hud = _gameFactory.CreateHud();
+
+            hud.GetComponentInChildren<ActorUI>().Construct(hero.GetComponentInChildren<HeroHealth>());
         }
 
         private static void CameraFollow(GameObject hero)

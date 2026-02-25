@@ -9,7 +9,9 @@ namespace _Project.Logic.Infrastructure
 
         private void Awake()
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var bootstrapper = FindObjectOfType<GameBootstrapper>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             if (bootstrapper == null)
             {
