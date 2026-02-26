@@ -10,7 +10,7 @@ namespace _Project.Logic.UI
 
         private IHealth _health;
 
-        private void Start()
+        private void Awake()
         {
             IHealth health = GetComponent<IHealth>();
 

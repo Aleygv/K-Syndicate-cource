@@ -50,7 +50,7 @@ namespace _Project.Logic.Hero
                 return;
 
             Current -= damage;
-            Animator.PlayHit();
+            // Animator.PlayHit();
         }
     }
 }

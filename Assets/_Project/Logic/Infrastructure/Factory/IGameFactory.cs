@@ -21,5 +21,7 @@ namespace _Project.Logic.Infrastructure.Factory
         GameObject CreateHud();
 
         void CleanUp();
+
+        void Register(ISavedProgressReader progressReader);
     }
 }

@@ -10,6 +10,7 @@ namespace _Project.Logic.Infrastructure.States
     public class LoadLevelState : IPayLoadedState<string>
     {
         private const string INITIALPOINTTAG = "InitialPoint";
+        private const string ENEMYSPAWNER = "EnemySpawner";
         private readonly GameStateMachine _gameStateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _curtain;
@@ -61,11 +62,22 @@ namespace _Project.Logic.Infrastructure.States
 
         private void InitGameWorld()
         {
+            InitSpawners();
+
             GameObject hero = _gameFactory.CreateHero(at: GameObject.FindWithTag(INITIALPOINTTAG));
 
             InitHud(hero);
 
             CameraFollow(hero);
+        }
+
+        private void InitSpawners()
+        {
+            foreach (GameObject spawnerObject in GameObject.FindGameObjectsWithTag(ENEMYSPAWNER))
+            {
+                var spawner = spawnerObject.GetComponent<EnemySpawner>();
+                _gameFactory.Register(spawner);
+            }
         }
 
         private void InitHud(GameObject hero)

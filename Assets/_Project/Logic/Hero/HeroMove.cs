@@ -35,10 +35,14 @@ namespace _Project.Logic.Hero
 
                 transform.forward = movementVector;
             }
+            else
+            {
+                movementVector = Vector3.zero;
+            }
 
             movementVector += Physics.gravity;
 
-            _characterController.Move(_movementSpeed * movementVector * Time.deltaTime);
+            _characterController.Move(movementVector * (_movementSpeed * Time.deltaTime));
         }
 
         public void UpdateProgress(PlayerProgress progress)
