@@ -21,7 +21,7 @@ namespace _Project.Logic.Infrastructure.States
                 [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, curtain,
                     services.Single<IGameFactory>(), services.Single<IPersistentProgressService>()),
                 [typeof(LoadProgressState)] = new LoadProgressState(this, services.Single<IPersistentProgressService>(),
-                    services.Single<ISaveLoadService>()),
+                    services.Single<ISaveLoadService>(), services.Single<IStaticDataService>()),
                 [typeof(GameLoopState)] = new GameLoopState(this),
             };
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using _Project.Logic.Hero;
-using _Project.Logic.Infrastructure.Factory;
-using _Project.Logic.Infrastructure.Services;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace _Project.Logic.Enemy
@@ -17,7 +13,6 @@ namespace _Project.Logic.Enemy
         public float EffectiveDistance = 0.5f;
         public float Damage = 10f;
 
-        private IGameFactory _factory;
         private Transform _heroTransform;
         private float _attackCooldown;
         private bool _isAttacking;
@@ -27,10 +22,7 @@ namespace _Project.Logic.Enemy
 
         private void Awake()
         {
-            _factory = AllServices.Container.Single<IGameFactory>();
-
             _layerMask = 1 << LayerMask.NameToLayer("Player");
-            _factory.HeroCreated += OnHeroCreated;
         }
 
         private void Update()
@@ -41,6 +33,11 @@ namespace _Project.Logic.Enemy
             {
                 StartAttack();
             }
+        }
+
+        public void Construct(Transform heroTransform)
+        {
+            _heroTransform = heroTransform;
         }
 
         private void OnAttack()
@@ -102,11 +99,6 @@ namespace _Project.Logic.Enemy
         private bool CanAttack()
         {
             return _attackIsActive && !_isAttacking && CooldownIsUp();
-        }
-
-        private void OnHeroCreated()
-        {
-            _heroTransform = _factory.HeroGameObject.transform;
         }
     }
 }

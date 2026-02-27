@@ -1,55 +1,30 @@
-﻿using System;
-using _Project.Logic.Infrastructure.Factory;
-using _Project.Logic.Infrastructure.Services;
+﻿using _Project.Logic.Infrastructure.Factory;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace _Project.Logic.Enemy
 {
-    public class AgentMoveToPlayer : MonoBehaviour
+    public class AgentMoveToPlayer : Follow
     {
         private const float MINIMAL_DISTANCE = 1;
 
         public NavMeshAgent Agent;
 
         private Transform _heroTransform;
+
         private IGameFactory _gameFactory;
 
-        private void Start()
+        public void Construct(Transform heroTransform)
         {
-            _gameFactory = AllServices.Container.Single<IGameFactory>();
-
-            if (_gameFactory.HeroGameObject != null)
-            {
-                InitializeHeroTransform();
-            }
-            else
-            {
-                _gameFactory.HeroCreated += HeroCreated;
-            }
+            _heroTransform = heroTransform;
         }
 
         private void Update()
         {
-            if (Initialized() && HeroNotReached())
+            if (_heroTransform && HeroNotReached())
             {
                 Agent.destination = _heroTransform.position;
             }
-        }
-
-        private bool Initialized()
-        {
-            return _heroTransform != null;
-        }
-
-        private void InitializeHeroTransform()
-        {
-            _heroTransform = _gameFactory.HeroGameObject.transform;
-        }
-
-        private void HeroCreated()
-        {
-            InitializeHeroTransform();
         }
 
         private bool HeroNotReached()

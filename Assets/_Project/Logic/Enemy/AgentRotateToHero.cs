@@ -9,29 +9,17 @@ namespace _Project.Logic.Enemy
         public float Speed;
 
         private Transform _heroTransform;
-        private IGameFactory _gameFactory;
         private Vector3 _positionToLook;
-
-        private void Start()
-        {
-            _gameFactory = AllServices.Container.Single<IGameFactory>();
-
-            if (HeroExists())
-                InitializeHeroTransform();
-            else
-                _gameFactory.HeroCreated += InitializeHeroTransform;
-        }
-
-        private bool HeroExists() =>
-            _gameFactory.HeroGameObject != null;
-
-        private void InitializeHeroTransform() =>
-            _heroTransform = _gameFactory.HeroGameObject.transform;
 
         private void Update()
         {
             if (Initialized())
                 RotateTowardsHero();
+        }
+
+        public void Construct(Transform heroTransform)
+        {
+            _heroTransform = heroTransform;
         }
 
         private void RotateTowardsHero()

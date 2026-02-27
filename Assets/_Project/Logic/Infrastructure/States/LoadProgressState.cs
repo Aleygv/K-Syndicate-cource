@@ -1,6 +1,8 @@
 ﻿using _Project.Logic.Data;
+using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using _Project.Logic.Infrastructure.Services.SaveLoad;
+using _Project.Logic.StaticData;
 
 namespace _Project.Logic.Infrastructure.States
 {
@@ -9,12 +11,15 @@ namespace _Project.Logic.Infrastructure.States
         private readonly GameStateMachine _gameStateMachine;
         private readonly IPersistentProgressService _progressService;
         private ISaveLoadService _saveLoadService;
+        private IStaticDataService _staticData;
 
-        public LoadProgressState(GameStateMachine gameStateMachine, IPersistentProgressService progressService, ISaveLoadService saveLoadService)
+        public LoadProgressState(GameStateMachine gameStateMachine, IPersistentProgressService progressService,
+            ISaveLoadService saveLoadService, IStaticDataService staticData)
         {
             _gameStateMachine = gameStateMachine;
             _progressService = progressService;
             _saveLoadService = saveLoadService;
+            _staticData = staticData;
         }
 
         public void Enter()
@@ -40,9 +45,11 @@ namespace _Project.Logic.Infrastructure.States
         {
             var progress = new PlayerProgress(initialLevel: "Main");
 
-            progress.HeroState.MaxHP = 50f;
-            progress.HeroStats.Damage = 1f;
-            progress.HeroStats.DamageRadius = 0.5f;
+            HeroStaticData heroData = _staticData.ForHero();
+
+            progress.HeroState.MaxHP = heroData.Hp;
+            progress.HeroStats.Damage = heroData.Damage;
+            progress.HeroStats.DamageRadius = heroData.DamageRadius;
             progress.HeroState.ResetHP();
 
             return progress;

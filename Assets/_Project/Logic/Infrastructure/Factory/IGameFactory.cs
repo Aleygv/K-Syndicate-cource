@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
+using _Project.Logic.StaticData;
 using UnityEngine;
 
 namespace _Project.Logic.Infrastructure.Factory
 {
     public interface IGameFactory : IService
     {
-        event Action HeroCreated;
-
-        GameObject HeroGameObject { get; }
-
         List<ISavedProgressReader> ProgressReaders { get; }
 
         List<ISavedProgress> ProgressWriters { get; }
@@ -23,5 +19,7 @@ namespace _Project.Logic.Infrastructure.Factory
         void CleanUp();
 
         void Register(ISavedProgressReader progressReader);
+
+        GameObject CreateMonster(MonsterTypeId typeId, Transform parent);
     }
 }
