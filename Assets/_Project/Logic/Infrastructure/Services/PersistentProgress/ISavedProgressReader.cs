@@ -2,8 +2,8 @@
 
 namespace _Project.Logic.Infrastructure.Services.PersistentProgress
 {
-    public interface ISavedProgress : ISavedProgressReader
+    public interface ISavedProgressReader
     {
-        void UpdateProgress(PlayerProgress progress);
+        void LoadProgress(PlayerProgress progress);
     }
 }

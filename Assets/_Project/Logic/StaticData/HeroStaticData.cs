@@ -13,7 +13,5 @@ namespace _Project.Logic.StaticData
 
         [Range(1f, 3f)]
         public float DamageRadius;
-
-        public GameObject Prefab;
     }
 }

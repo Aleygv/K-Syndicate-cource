@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Project.Logic.Data;
 using _Project.Logic.Enemy;
-using _Project.Logic.Hero;
 using _Project.Logic.Infrastructure.AssetManagement;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
@@ -10,6 +9,7 @@ using _Project.Logic.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using Object = UnityEngine.Object;
+using Random = System.Random;
 
 namespace _Project.Logic.Infrastructure.Factory
 {
@@ -17,6 +17,10 @@ namespace _Project.Logic.Infrastructure.Factory
     {
         private readonly IAssets _assets;
         private readonly IStaticDataService _staticData;
+        private readonly Random _randomService;
+        private readonly IPersistentProgressService _progressService;
+        private ScoreManager _scoreManager;
+        private LootPickupTracker _pickupTracker;
 
         public List<ISavedProgressReader> ProgressReaders { get; } = new List<ISavedProgressReader>();
 
@@ -25,15 +29,22 @@ namespace _Project.Logic.Infrastructure.Factory
         private GameObject HeroGameObject { get; set; }
 
 
-        public GameFactory(IAssets assets, IStaticDataService staticData)
+        public GameFactory(IAssets assets, IStaticDataService staticData, Random randomService,
+            IPersistentProgressService progressService)
         {
             _assets = assets;
             _staticData = staticData;
+            _randomService = randomService;
+            _progressService = progressService;
         }
 
         public GameObject CreateHud()
         {
-            return InstantiateRegistered(AssetPath.HUDPATH);
+            GameObject hud = InstantiateRegistered(AssetPath.HUDPATH);
+
+            hud.GetComponentInChildren<LootCounter>().Construct(_progressService.Progress.WorldData);
+
+            return hud;
         }
 
         public GameObject CreateHero(GameObject at)
@@ -55,6 +66,10 @@ namespace _Project.Logic.Infrastructure.Factory
             monster.GetComponent<AgentMoveToPlayer>().Construct(HeroGameObject.transform);
             monster.GetComponent<NavMeshAgent>().speed = monsterData.MoveSpeed;
 
+            LootSpawner lootSpawner = monster.GetComponentInChildren<LootSpawner>();
+            lootSpawner.SetLoot(monsterData.MinLoot, monsterData.MaxLoot);
+            lootSpawner.Construct(this, _randomService, _pickupTracker);
+
             var attack = monster.GetComponent<Attack>();
             attack.Construct(HeroGameObject.transform);
             attack.Damage = monsterData.Damage;
@@ -64,6 +79,30 @@ namespace _Project.Logic.Infrastructure.Factory
             monster.GetComponent<AgentRotateToHero>()?.Construct(HeroGameObject.transform);
 
             return monster;
+        }
+
+        public LootPiece CreateLoot()
+        {
+            LootPiece lootPiece = InstantiateRegistered(AssetPath.LOOT).GetComponent<LootPiece>();
+
+            if (_progressService != null)
+            {
+                lootPiece.Construct(_progressService.Progress.WorldData, _scoreManager, _pickupTracker);
+            }
+
+            return lootPiece;
+        }
+
+        public void CreateScoreManager()
+        {
+            GameObject scoreManager = InstantiateRegistered(AssetPath.SCOREMANAGER);
+            _scoreManager = scoreManager.GetComponent<ScoreManager>();
+        }
+
+        public void CreateLootPickupTracker()
+        {
+            GameObject pickupTracker = InstantiateRegistered(AssetPath.LOOTPICKUPTRACKER);
+            _pickupTracker = pickupTracker.GetComponent<LootPickupTracker>();
         }
 
         public void CleanUp()

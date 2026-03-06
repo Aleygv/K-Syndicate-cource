@@ -6,6 +6,7 @@ using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using _Project.Logic.Infrastructure.Services.SaveLoad;
 using _Project.Logic.StaticData;
 using UnityEngine;
+using Random = System.Random;
 
 namespace _Project.Logic.Infrastructure.States
 {
@@ -47,12 +48,17 @@ namespace _Project.Logic.Infrastructure.States
         {
             RegisterStaticData();
 
+            Random randomService = new Random();
+
             _services.RegisterSingle(InputService());
             _services.RegisterSingle<IAssets>(new AssetProvider());
             _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
+
             _services.RegisterSingle<IGameFactory>(new GameFactory(_services.Single<IAssets>(),
-                _services.Single<IStaticDataService>()));
-            _services.RegisterSingle<ISaveLoadService>(new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+                _services.Single<IStaticDataService>(), randomService, _services.Single<IPersistentProgressService>()));
+
+            _services.RegisterSingle<ISaveLoadService>(
+                new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
         }
 
         private void RegisterStaticData()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Project.Logic.Enemy;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using _Project.Logic.StaticData;
@@ -21,5 +22,11 @@ namespace _Project.Logic.Infrastructure.Factory
         void Register(ISavedProgressReader progressReader);
 
         GameObject CreateMonster(MonsterTypeId typeId, Transform parent);
+
+        LootPiece CreateLoot();
+
+        void CreateScoreManager();
+
+        void CreateLootPickupTracker();
     }
 }

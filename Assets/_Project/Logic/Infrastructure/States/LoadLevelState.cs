@@ -69,6 +69,8 @@ namespace _Project.Logic.Infrastructure.States
             InitHud(hero);
 
             CameraFollow(hero);
+
+            InitSaveManagers();
         }
 
         private void InitSpawners()
@@ -85,6 +87,12 @@ namespace _Project.Logic.Infrastructure.States
             GameObject hud = _gameFactory.CreateHud();
 
             hud.GetComponentInChildren<ActorUI>().Construct(hero.GetComponentInChildren<HeroHealth>());
+        }
+
+        private void InitSaveManagers()
+        {
+            _gameFactory.CreateLootPickupTracker();
+            _gameFactory.CreateScoreManager();
         }
 
         private static void CameraFollow(GameObject hero)

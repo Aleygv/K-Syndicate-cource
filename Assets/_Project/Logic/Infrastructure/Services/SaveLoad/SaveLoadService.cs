@@ -28,6 +28,19 @@ namespace _Project.Logic.Infrastructure.Services.SaveLoad
             PlayerPrefs.SetString(PROGRESSKEY, _progressService.Progress.ToJson());
         }
 
+        public void SaveProgress(ISavedProgress currentSaver)
+        {
+            foreach (ISavedProgress progressWriter in _gameFactory.ProgressWriters)
+            {
+                if (progressWriter == currentSaver)
+                {
+                    currentSaver.UpdateProgress(_progressService.Progress);
+                }
+            }
+
+            PlayerPrefs.SetString(PROGRESSKEY, _progressService.Progress.ToJson());
+        }
+
         public PlayerProgress LoadProgress()
         {
             return PlayerPrefs.GetString(PROGRESSKEY)?.ToDeserialized<PlayerProgress>();

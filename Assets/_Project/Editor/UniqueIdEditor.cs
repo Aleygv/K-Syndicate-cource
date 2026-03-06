@@ -14,7 +14,7 @@ namespace _Project.Editor
         {
             var uniqueId = (UniqueId)target;
 
-            Generate(uniqueId);
+            // Generate(uniqueId);
 
             if (IsPrefab(uniqueId))
             {
