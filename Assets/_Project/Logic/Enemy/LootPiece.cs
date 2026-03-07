@@ -14,21 +14,24 @@ namespace _Project.Logic.Enemy
         public GameObject PickupFxPrefab;
         public TextMeshPro LootText;
         public GameObject PickupPopup;
-        public UniqueId UniqueId;
 
-        public event Action OnLootCollected;
+        public event Action<LootPiece> OnLootCollected;
 
         private Loot _loot;
         private bool _picked;
         private WorldData _worldData;
         private ScoreManager _scoreManager;
-        private LootPickupTracker _pickupTracker;
+        private LootSavedData _savedData;
 
-        public void Construct(WorldData worldData, ScoreManager scoreManager, LootPickupTracker tracker)
+        public void Construct(WorldData worldData, ScoreManager scoreManager)
         {
             _worldData = worldData;
             _scoreManager = scoreManager;
-            _pickupTracker = tracker;
+        }
+
+        public void UpdateSavedData(Vector3Data position, Loot loot)
+        {
+            _savedData = new LootSavedData(position, loot);
         }
 
         public void Initialize(Loot loot)
@@ -36,14 +39,9 @@ namespace _Project.Logic.Enemy
             _loot = loot;
         }
 
-        public void SetId(string id)
+        public LootSavedData GetLootSavedData()
         {
-            UniqueId.Id = id;
-        }
-
-        public void SetPosition(Vector3Data position)
-        {
-            transform.position = position.AsUnityVector();
+            return _savedData;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -57,6 +55,8 @@ namespace _Project.Logic.Enemy
                 return;
 
             _picked = true;
+
+            OnLootCollected?.Invoke(this);
 
             AddScoreToManager();
             UpdateWorldData();

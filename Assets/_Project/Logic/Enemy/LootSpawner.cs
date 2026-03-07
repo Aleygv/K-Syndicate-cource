@@ -12,41 +12,28 @@ namespace _Project.Logic.Enemy
         private int _lootMin;
         private int _lootMax;
         private Random _random;
-        private LootPickupTracker _pickupTracker;
 
-        public void Construct(IGameFactory gameFactory, Random random, LootPickupTracker lootPickupTracker)
+        public void Construct(IGameFactory gameFactory, Random random)
         {
             _factory = gameFactory;
             _random = random;
-            _pickupTracker = lootPickupTracker;
+            // _pickupTracker = lootPickupTracker;
         }
 
         private void Start()
         {
             EnemyDeath.Happend += SpawnLoot;
-            SpawnRemainingLoot();
+            // SpawnRemainingLoot();
         }
 
         private void SpawnLoot()
         {
-            LootPiece loot = _factory.CreateLoot();
+            var lootItem = GenerateLoot();
+
+            LootPiece loot = _factory.CreateLoot(transform.position.AsVectorData(), lootItem);
             loot.transform.position = transform.position;
 
-            var lootItem = GenerateLoot();
             loot.Initialize(lootItem);
-        }
-
-        private void SpawnRemainingLoot()
-        {
-            foreach (LootSavedData lootSavedData in _pickupTracker.GetRemainingLootData)
-            {
-                var instance = _factory.CreateLoot();
-                var lootPiece = instance.GetComponent<LootPiece>();
-                var lootItem = GenerateLoot();
-                lootPiece.Initialize(lootItem);
-                lootPiece.SetId(lootSavedData.Id);
-                lootPiece.SetPosition(lootSavedData.Position);
-            }
         }
 
         private Loot GenerateLoot()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Project.Logic.Data;
 using _Project.Logic.Enemy;
 using _Project.Logic.Infrastructure.AssetManagement;
@@ -20,11 +21,13 @@ namespace _Project.Logic.Infrastructure.Factory
         private readonly Random _randomService;
         private readonly IPersistentProgressService _progressService;
         private ScoreManager _scoreManager;
-        private LootPickupTracker _pickupTracker;
+        // private LootPickupTracker _pickupTracker;
 
         public List<ISavedProgressReader> ProgressReaders { get; } = new List<ISavedProgressReader>();
 
         public List<ISavedProgress> ProgressWriters { get; } = new List<ISavedProgress>();
+
+        public event Action<LootPiece> OnLootCreated;
 
         private GameObject HeroGameObject { get; set; }
 
@@ -44,7 +47,14 @@ namespace _Project.Logic.Infrastructure.Factory
 
             hud.GetComponentInChildren<LootCounter>().Construct(_progressService.Progress.WorldData);
 
+            CreateQuetier();
+
             return hud;
+        }
+
+        private void CreateQuetier()
+        {
+            InstantiateRegistered(AssetPath.QUETIER);
         }
 
         public GameObject CreateHero(GameObject at)
@@ -68,7 +78,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
             LootSpawner lootSpawner = monster.GetComponentInChildren<LootSpawner>();
             lootSpawner.SetLoot(monsterData.MinLoot, monsterData.MaxLoot);
-            lootSpawner.Construct(this, _randomService, _pickupTracker);
+            lootSpawner.Construct(this, _randomService);
 
             var attack = monster.GetComponent<Attack>();
             attack.Construct(HeroGameObject.transform);
@@ -81,14 +91,19 @@ namespace _Project.Logic.Infrastructure.Factory
             return monster;
         }
 
-        public LootPiece CreateLoot()
+        public LootPiece CreateLoot(Vector3Data spawnPosition, Loot lootItem)
         {
-            LootPiece lootPiece = InstantiateRegistered(AssetPath.LOOT).GetComponent<LootPiece>();
+            GameObject lootPrefab = InstantiateRegistered(AssetPath.LOOT);
+            LootPiece lootPiece = lootPrefab.GetComponent<LootPiece>();
 
             if (_progressService != null)
             {
-                lootPiece.Construct(_progressService.Progress.WorldData, _scoreManager, _pickupTracker);
+                lootPiece.Construct(_progressService.Progress.WorldData, _scoreManager);
             }
+
+            lootPiece.UpdateSavedData(spawnPosition, lootItem);
+
+            OnLootCreated?.Invoke(lootPiece);
 
             return lootPiece;
         }
@@ -101,8 +116,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
         public void CreateLootPickupTracker()
         {
-            GameObject pickupTracker = InstantiateRegistered(AssetPath.LOOTPICKUPTRACKER);
-            _pickupTracker = pickupTracker.GetComponent<LootPickupTracker>();
+            Register(AllServices.Container.Single<LootPickupTracker>());
         }
 
         public void CleanUp()

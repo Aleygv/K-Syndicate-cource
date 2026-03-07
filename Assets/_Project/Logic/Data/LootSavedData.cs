@@ -1,17 +1,19 @@
 ﻿using System;
+using _Project.Logic.Enemy;
 
 namespace _Project.Logic.Data
 {
     [Serializable]
     public class LootSavedData
     {
-        public string Id;
+        // public string Id;
         public Vector3Data Position;
+        public Loot Loot;
 
-        public LootSavedData(string id, Vector3Data position)
+        public LootSavedData(Vector3Data position, Loot loot)
         {
-            Id = id;
             Position = position;
+            Loot = loot;
         }
     }
 }

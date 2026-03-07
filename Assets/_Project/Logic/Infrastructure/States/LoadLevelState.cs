@@ -1,6 +1,8 @@
 ﻿using System;
+using _Project.Logic.Enemy;
 using _Project.Logic.Hero;
 using _Project.Logic.Infrastructure.Factory;
+using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
 using _Project.Logic.UI;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace _Project.Logic.Infrastructure.States
         private readonly LoadingCurtain _curtain;
         private readonly IGameFactory _gameFactory;
         private readonly IPersistentProgressService _progressService;
+        private LootPickupTracker _lootTracker;
 
         public LoadLevelState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, LoadingCurtain curtain,
             IGameFactory gameFactory, IPersistentProgressService progressService)
@@ -25,6 +28,7 @@ namespace _Project.Logic.Infrastructure.States
             _curtain = curtain;
             _gameFactory = gameFactory;
             _progressService = progressService;
+            _lootTracker = AllServices.Container.Single<LootPickupTracker>();
         }
 
         public void Enter(string sceneName)
@@ -48,6 +52,8 @@ namespace _Project.Logic.Infrastructure.States
         {
             InitGameWorld();
             InformProgressReaders();
+
+            _lootTracker.SpawnRemainingLoot();
 
             _gameStateMachine.Enter<GameLoopState>();
         }
@@ -91,8 +97,8 @@ namespace _Project.Logic.Infrastructure.States
 
         private void InitSaveManagers()
         {
-            _gameFactory.CreateLootPickupTracker();
             _gameFactory.CreateScoreManager();
+            _gameFactory.CreateLootPickupTracker();
         }
 
         private static void CameraFollow(GameObject hero)

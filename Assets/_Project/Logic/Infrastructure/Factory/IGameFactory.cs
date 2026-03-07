@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using _Project.Logic.Data;
 using _Project.Logic.Enemy;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
@@ -13,6 +15,8 @@ namespace _Project.Logic.Infrastructure.Factory
 
         List<ISavedProgress> ProgressWriters { get; }
 
+        event Action<LootPiece> OnLootCreated;
+
         GameObject CreateHero(GameObject at);
 
         GameObject CreateHud();
@@ -23,7 +27,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
         GameObject CreateMonster(MonsterTypeId typeId, Transform parent);
 
-        LootPiece CreateLoot();
+        LootPiece CreateLoot(Vector3Data asVectorData, Loot lootItem);
 
         void CreateScoreManager();
 

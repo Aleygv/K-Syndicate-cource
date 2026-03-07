@@ -9,7 +9,6 @@ namespace _Project.Logic.Data
 
         public LootData LootData;
 
-
         public WorldData(string initialLevel)
         {
             PositionOnLevel = new PositionOnLevel(initialLevel);

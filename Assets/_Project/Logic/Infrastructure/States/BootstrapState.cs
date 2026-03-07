@@ -1,4 +1,5 @@
-﻿using _Project.Logic.Infrastructure.AssetManagement;
+﻿using _Project.Logic.Enemy;
+using _Project.Logic.Infrastructure.AssetManagement;
 using _Project.Logic.Infrastructure.Factory;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.Input;
@@ -59,6 +60,8 @@ namespace _Project.Logic.Infrastructure.States
 
             _services.RegisterSingle<ISaveLoadService>(
                 new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+
+            _services.RegisterSingle<LootPickupTracker>(new LootPickupTracker(_services.Single<IGameFactory>()));
         }
 
         private void RegisterStaticData()

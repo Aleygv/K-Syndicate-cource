@@ -7,5 +7,6 @@
         public const string HEROPATH = "hero";
         public const string SCOREMANAGER = "ScoreManager";
         public const string LOOTPICKUPTRACKER = "LootPickupTracker";
+        public const string QUETIER = "quetier";
     }
 }
