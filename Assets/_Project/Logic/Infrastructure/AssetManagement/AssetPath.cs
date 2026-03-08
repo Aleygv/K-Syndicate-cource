@@ -2,11 +2,12 @@
 {
     public static class AssetPath
     {
-        public const string LOOT = "Loot/Loot";
-        public const string HUDPATH = "Hud";
-        public const string HEROPATH = "hero";
-        public const string SCOREMANAGER = "ScoreManager";
-        public const string LOOTPICKUPTRACKER = "LootPickupTracker";
-        public const string QUETIER = "quetier";
+        public const string Loot = "Loot/Loot";
+        public const string HudPath = "Hud";
+        public const string HeroPath = "hero";
+        public const string ScoreManager = "ScoreManager";
+        public const string LootPickupTracker = "LootPickupTracker";
+        public const string Quetier = "quetier";
+        public const string Spawner = "Enemies/SpawnPoint";
     }
 }

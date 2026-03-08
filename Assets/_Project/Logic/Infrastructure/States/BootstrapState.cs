@@ -67,7 +67,7 @@ namespace _Project.Logic.Infrastructure.States
         private void RegisterStaticData()
         {
             IStaticDataService staticData = new StaticDataService();
-            staticData.LoadMonsters();
+            staticData.Load();
             staticData.LoadHero();
             _services.RegisterSingle(staticData);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using _Project.Logic.Data;
 using _Project.Logic.Enemy;
+using _Project.Logic.EnemySpawners;
 using _Project.Logic.Infrastructure.AssetManagement;
 using _Project.Logic.Infrastructure.Services;
 using _Project.Logic.Infrastructure.Services.PersistentProgress;
@@ -43,7 +44,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
         public GameObject CreateHud()
         {
-            GameObject hud = InstantiateRegistered(AssetPath.HUDPATH);
+            GameObject hud = InstantiateRegistered(AssetPath.HudPath);
 
             hud.GetComponentInChildren<LootCounter>().Construct(_progressService.Progress.WorldData);
 
@@ -54,12 +55,12 @@ namespace _Project.Logic.Infrastructure.Factory
 
         private void CreateQuetier()
         {
-            InstantiateRegistered(AssetPath.QUETIER);
+            InstantiateRegistered(AssetPath.Quetier);
         }
 
         public GameObject CreateHero(GameObject at)
         {
-            HeroGameObject = InstantiateRegistered(AssetPath.HEROPATH, at.transform.position);
+            HeroGameObject = InstantiateRegistered(AssetPath.HeroPath, at.transform.position);
             return HeroGameObject;
         }
 
@@ -93,7 +94,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
         public LootPiece CreateLoot(Vector3Data spawnPosition, Loot lootItem)
         {
-            GameObject lootPrefab = InstantiateRegistered(AssetPath.LOOT);
+            GameObject lootPrefab = InstantiateRegistered(AssetPath.Loot);
             LootPiece lootPiece = lootPrefab.GetComponent<LootPiece>();
 
             if (_progressService != null)
@@ -110,13 +111,23 @@ namespace _Project.Logic.Infrastructure.Factory
 
         public void CreateScoreManager()
         {
-            GameObject scoreManager = InstantiateRegistered(AssetPath.SCOREMANAGER);
+            GameObject scoreManager = InstantiateRegistered(AssetPath.ScoreManager);
             _scoreManager = scoreManager.GetComponent<ScoreManager>();
         }
 
         public void CreateLootPickupTracker()
         {
             Register(AllServices.Container.Single<LootPickupTracker>());
+        }
+
+        public void CreateSpawner(Vector3 at, string spawnerId, MonsterTypeId monsterTypeId)
+        {
+            SpawnPoint spawner = InstantiateRegistered(AssetPath.Spawner, at).GetComponent<SpawnPoint>();
+
+            spawner.Construct(this);
+
+            spawner.Id = spawnerId;
+            spawner.MonsterTypeId = monsterTypeId;
         }
 
         public void CleanUp()

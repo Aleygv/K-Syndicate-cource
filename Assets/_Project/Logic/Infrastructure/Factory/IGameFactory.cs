@@ -23,7 +23,7 @@ namespace _Project.Logic.Infrastructure.Factory
 
         void CleanUp();
 
-        void Register(ISavedProgressReader progressReader);
+        void CreateSpawner(Vector3 at, string spawnerId, MonsterTypeId monsterTypeId);
 
         GameObject CreateMonster(MonsterTypeId typeId, Transform parent);
 

@@ -7,7 +7,6 @@ TagManager:
   - InitialPoint
   - SaveTrigger
   - FxTemporaire
-  - EnemySpawner
   layers:
   - Default
   - TransparentFX
